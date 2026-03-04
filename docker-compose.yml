@@ -1,0 +1,46 @@
+services:
+
+  # ── CPU variant (default) ──────────────────────────────────────────────────
+  diffvc-cpu:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_TARGET: cpu
+    image: diffvc:cpu
+    container_name: diffvc_cpu
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./checkpts:/app/checkpts:ro   # model checkpoints (not baked into image)
+      - ./webapp:/app/webapp:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    profiles: [cpu]     # docker compose --profile cpu up
+
+  # ── GPU variant ───────────────────────────────────────────────────────────
+  diffvc-gpu:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_TARGET: gpu
+    image: diffvc:gpu
+    container_name: diffvc_gpu
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./checkpts:/app/checkpts:ro
+      - ./webapp:/app/webapp:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    profiles: [gpu]     # docker compose --profile gpu up

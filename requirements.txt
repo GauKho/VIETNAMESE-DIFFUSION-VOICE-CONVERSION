@@ -1,0 +1,15 @@
+# torchaudio
+# torch
+einops==0.3.0
+librosa
+webrtcvad==2.0.10
+numpy
+scipy
+matplotlib
+tb-nightly
+future
+tqdm
+tgt
+uvicorn
+fastapi
+python-multipart
